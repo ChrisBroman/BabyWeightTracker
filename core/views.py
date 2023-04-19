@@ -4,9 +4,23 @@ from django.contrib.auth import logout
 from django.views.generic import TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .forms import SignupForm
+import pandas as pd
+import openpyxl
+import scipy.stats as stats
+from datetime import datetime
 
-import datetime
+from .forms import SignupForm
+from .models import Baby, Record
+
+
+def get_percentile(weight, month):
+    df = pd.read_excel('../percentile.xlsx')
+    L = df.iloc[month]['L']
+    M = df.iloc[month]['M']
+    S = df.iloc[month]['S']
+    z_score = ((weight / M) ** L - 1) / (L * S)
+    percentile = stats.norm.cdf(z_score) * 100
+    return percentile
 
 class Signup(View):
     def get(self, request):
@@ -28,5 +42,12 @@ def logout_view(request):
 
 class Index(View):
     def get(self, request):
-        context = {}
+        user = request.user
+        baby = Baby.objects.get(parent=user)
+        records = Record.objects.filter(baby=baby)
+        context = {
+            'user': user,
+            'baby': baby,
+            'records': records,
+        }
         return render(request, 'core/index.html', context)
