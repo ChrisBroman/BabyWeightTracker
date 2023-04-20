@@ -1,0 +1,52 @@
+{% extends 'core/base.html' %}
+
+{% block title %}{{baby.name|title}}'s Details{{ vehicle }}{% endblock title %}
+
+{% block content %}
+    <div class="container">
+        <h1 class="my-4 text-center">{{ baby }}'s Details</h1>
+        <div class="row justify-content-center">
+            <div class="col-md-3 me-5">
+                <h4>Actions</h4>
+                <div class="d-grid gap-2">
+                    <a href="{% url 'core:records' baby.id %}" class="btn btn-primary">Baby Records</a>
+                    <a href="{% url 'core:new_record' baby.id %}" class="btn btn-primary" >Enter New Record</a>
+                    <a href="{% url 'core:delete_baby' baby.id %}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this baby?');">Delete Baby</a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h4>Baby Stats</h4>
+                <table class="table table-striped">
+                    <tbody>
+                        <tr>
+                            <th>Name</th>
+                            <td>{{ baby.name|title }}</td>
+                        </tr>
+                        <tr>
+                            <th>Birth Date</th>
+                            <td>{{ baby.birth_date }}</td>
+                        </tr>
+                        <tr>
+                            <th>Birth Weight</th>
+                            <td>{{ baby.birth_weight }} kg</td>
+                        </tr>
+                        <tr>
+                            <th>Birth Length</th>
+                            <td>{{ baby.birth_length }} cm</td>
+                        </tr>
+                        {% if baby.current_weight != None %}
+                        <tr>
+                            <th>Current Weight</th>
+                            <td>{{ baby.current_weight }} kg</td>
+                        </tr>
+                        <tr>
+                            <th>Current Percentile</th>
+                            <td>{{ baby.current_percentile }}</td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

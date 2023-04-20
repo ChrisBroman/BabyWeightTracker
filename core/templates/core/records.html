@@ -1,0 +1,36 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Records{% endblock title %}
+
+{% block content %}
+    <div class='container'>
+        <h1 class='my-4 text-center'>{{baby}}'s Records</h1>
+        <div class="table-responsive">
+            <table class="table table-hover table-striped table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Weight</th>
+                        <th scope="col">Length</th>
+                        <th scope="col">Percentile</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for record in records %}
+                        <tr>
+                            <td><a href="{% url 'core:record' baby.id record.id %}" class="text-decoration-none text-reset">{{record.date}}</a></td>
+                            <td><a href="{% url 'core:record' baby.id record.id %}" class="text-decoration-none text-reset">{{record.weight}} kg</a></td>
+                            <td><a href="{% url 'core:record' baby.id record.id %}" class="text-decoration-none text-reset">{{record.length}} cm</a></td>
+                            <td><a href="{% url 'core:record' baby.id record.id %}" class="text-decoration-none text-reset">{{record.percentile}}</a></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div>
+            <a href="{% url 'core:new_record' baby.id %}" class="btn btn-primary">Add Record</a>
+            <a href="{% url 'core:baby_details' baby.id %}" class="btn btn-primary">Baby Details</a>
+
+        </div>
+    </div>
+{% endblock content %}
