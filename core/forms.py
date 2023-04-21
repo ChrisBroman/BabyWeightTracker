@@ -63,7 +63,6 @@ class EditRecordForm(forms.ModelForm):
     class Meta:
         model = Record
         fields = ['date', 'weight', 'length']
-        
         widgets = {
             'date': forms.DateInput(attrs={'type': 'date'}),
             'weight': forms.TextInput(),

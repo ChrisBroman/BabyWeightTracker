@@ -4,12 +4,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{% endblock %} | ExpenseTracker</title>
+    <title>{% block title %}{% endblock %} | Weight Tracker</title>
     <link rel="stylesheet" href="{% static 'core/css/bootstrap.css' %}">
+    <style>
+        .navbar {
+            background-color: #007bff;
+            box-shadow: 0 2px 4px rgba(0,0,0,.1);
+        }
+        .navbar-brand, .nav-link {
+            color: white !important;
+            margin-right: 1rem;
+        }
+        .nav-link:hover {
+            color: rgba(255, 255, 255, 0.8) !important;
+        }
+        footer {
+            background-color: #f8f9fa;
+            border-top: 1px solid #e5e5e5;
+        }
+    </style>
 </head>
 <body>
     <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
         <a class="navbar-brand" href="{% url 'core:index' %}">Weight Tracker</a>
         <div class="collapse navbar-collapse">
             {% if user.is_authenticated %}
@@ -28,7 +46,9 @@
             </div>
             {% endif %}
         </div>
-    </nav>
+    </div>
+</nav>
+
 
     <!-- Main Content -->
     <main class="container mt-4">
@@ -42,3 +62,5 @@
             <p>&copy; {{ year }} Baby Weight Tracker</p>
         </div>
     </footer>
+</body>
+</html>
