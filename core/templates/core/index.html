@@ -1,5 +1,7 @@
 {% extends 'core/base.html' %}
 
+{% load static %}
+
 {% block title %}Dashboard{% endblock title %}
 
 {% block content %}
@@ -10,12 +12,12 @@
         <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-4">
             <a href="{% url 'core:baby_details' baby.id %}" class="text-decoration-none text-reset">
                 <div class="card h-100 hover:shadow-sm" style="max-width: 14rem;">
-                    <!-- <img src="#" class="card-img-top" alt="car"> -->
+                    <img src="{% static 'core/img/baby.png' %}" class="card-img-top" alt="baby">
                     <div class="card-body">
                         <h5 class="card-title">{{ baby }}</h5>
                         <div class='card-text'>
                             {% if baby.current_weight %}
-                            <p>{{baby.current_weight}}</p>
+                            <p>{{baby.current_weight}} kg</p>
                             {% endif %}
                         </div>
                     </div>
