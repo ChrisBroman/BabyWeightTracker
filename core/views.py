@@ -11,9 +11,45 @@ import scipy.stats as stats
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from decimal import Decimal
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import io
+import urllib
+import base64
 
-from .forms import SignupForm, NewBabyForm, NewRecordForm, EditRecordForm
+from .forms import SignupForm, NewBabyForm, NewRecordForm, EditRecordForm, EditBabyForm
 from .models import Baby, Record
+
+def create_weight_graph(x, y):
+    plt.figure()
+    plt.plot(x, y, marker='*')
+    plt.title('Date vs. Weight')
+    plt.xticks(x, rotation='vertical')
+    plt.xlabel('Dates')
+    plt.ylabel('Weight (kg)')
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png')
+    buf.seek(0)
+    plt.close()
+    image_base64 = base64.b64encode(buf.read()).decode('utf-8')
+    buf.close()
+    return image_base64
+
+def create_percentile_graph(x, y):
+    plt.figure()
+    plt.plot(x, y, marker='*')
+    plt.title('Date vs. Percentile')
+    plt.xticks(x, rotation='vertical')
+    plt.xlabel('Dates')
+    plt.ylabel('Percentile')
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png')
+    buf.seek(0)
+    plt.close()
+    image_base64 = base64.b64encode(buf.read()).decode('utf-8')
+    buf.close()
+    return image_base64
 
 def months_difference(date1, date2):
     difference = relativedelta(date2, date1)
@@ -93,6 +129,27 @@ class NewBaby(View, LoginRequiredMixin):
         new_baby.save()
         return redirect('core:index')
     
+class EditBaby(View, LoginRequiredMixin):
+    def get(self, request, baby_pk):
+        user = request.user
+        baby = Baby.objects.get(parent=user, pk=baby_pk)
+        form = EditBabyForm()
+        context = {
+            'baby': baby,
+            'form': form,
+        }
+        return render(request, 'core/edit_baby.html', context)
+    
+    def post(self, request, baby_pk):
+        user = request.user
+        baby = Baby.objects.get(parent=user, pk=baby_pk)
+        form = EditBabyForm(request.POST, instance=baby)
+        if not form.is_valid():
+            context = {'form': form}
+            return render(request, 'core/edit_baby.html', context)
+        form.save()
+        return render('core:baby_details', baby_pk=baby_pk)
+    
 def delete_baby(request, baby_pk):
     baby = Baby.objects.get(pk=baby_pk)
     baby.delete()
@@ -131,9 +188,23 @@ class ViewRecords(View, LoginRequiredMixin):
         user = request.user
         baby = Baby.objects.get(parent=user, pk=baby_pk)
         records = Record.objects.filter(baby=baby)
+        x_weight_list = []
+        y_weight_list = []
+        for record in records:
+            x_weight_list.append(record.date)
+            y_weight_list.append(record.weight)
+        weight_graph_image = create_weight_graph(x_weight_list, y_weight_list)
+        x_percentile_list = []
+        y_percentile_list = []
+        for record in records:
+            x_percentile_list.append(record.date)
+            y_percentile_list.append(record.percentile)
+        percentile_graph_image = create_percentile_graph(x_percentile_list, y_percentile_list)    
         context = {
             'baby': baby,
             'records': records,
+            'weight_graph': weight_graph_image,
+            'percentile_graph': percentile_graph_image,
         }
         return render(request, 'core/records.html', context)
     
@@ -158,8 +229,14 @@ def delete_record(request, baby_pk, record_pk):
 
 class EditRecord(View, LoginRequiredMixin):
     def get(self, request, baby_pk, record_pk):
+        user = request.user
+        baby = Baby.objects.get(parent=user, pk=baby_pk)
+        record = Record.objects.get(baby=baby, pk=record_pk)
         form = EditRecordForm()
-        context = {'form': form}
+        context = {
+            'form': form,
+            'record': record,
+            }
         return render(request, 'core/edit_record.html', context)
     
     def post(self, request, baby_pk, record_pk):

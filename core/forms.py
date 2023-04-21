@@ -38,6 +38,17 @@ class NewBabyForm(forms.ModelForm):
                 'birth_length': forms.TextInput(),
             }
         
+class EditBabyForm(forms.ModelForm):
+    class Meta:
+        model = Baby
+        fields = ['name', 'birth_date', 'birth_weight', 'birth_length']
+        widgets = {
+                'name': forms.TextInput(),
+                'birth_date': forms.DateInput({'type': 'date'}),
+                'birth_weight': forms.TextInput(),
+                'birth_length': forms.TextInput(),
+            }
+        
 class NewRecordForm(forms.ModelForm):
     class Meta:
         model = Record
@@ -53,8 +64,8 @@ class EditRecordForm(forms.ModelForm):
         model = Record
         fields = ['date', 'weight', 'length']
         
-    widgets = {
-        'date': forms.DateInput(attrs={'type': 'date'}),
-        'weight': forms.TextInput(),
-        'length': forms.Textarea(),
-    }
+        widgets = {
+            'date': forms.DateInput(attrs={'type': 'date'}),
+            'weight': forms.TextInput(),
+            'length': forms.TextInput(),
+        }

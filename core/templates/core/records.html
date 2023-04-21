@@ -30,7 +30,14 @@
         <div>
             <a href="{% url 'core:new_record' baby.id %}" class="btn btn-primary">Add Record</a>
             <a href="{% url 'core:baby_details' baby.id %}" class="btn btn-primary">Baby Details</a>
-
+        </div>
+        <div class='d-flex justify-content-around'>
+            <div class='col'>
+                <img src="data:image/png;base64,{{ weight_graph }}" alt="Weight Graph">
+            </div>
+            <div class='col'>
+                <img src="data:image/png;base64,{{ percentile_graph }}" alt="Percentile Graph">
+            </div>
         </div>
     </div>
 {% endblock content %}
